@@ -9,7 +9,7 @@ contract BasicBank  {
     uint private collectedComission = 0;
 
     constructor() {
-        commission_taker = msg.sender;
+        commissionCollector = msg.sender;
     }
     
     modifier onlyCommissionCollector {
@@ -22,11 +22,11 @@ contract BasicBank  {
         userFunds[msg.sender] += msg.value; //işlemi yapan kullanıcının adres değeri msg.value kadar artırıldı.
     }
 
-    function withdraw(uint _amount) public payable {
+    function withdraw(uint _amount) external payable {
         require(getBalance(msg.sender) >= _amount);
         payable (msg.sender).transfer(_amount);
         userFunds[msg.sender] -= _amount;
-        collectedComission += _amount/100; //%1 komisyon olarak commission_taker hesabına ekleniyor.
+        userFunds[commissionCollector] += _amount/100; //%1 komisyon olarak commission_taker hesabına ekleniyor.
     }   
 
     function getBalance(address _user) public view returns(uint) {
@@ -37,13 +37,12 @@ contract BasicBank  {
         return commissionCollector;
     }
 
-    function transfer(address _userToSend, uint _amount) {
+    function transfer(address _userToSend, uint _amount) external{
         userFunds[_userToSend] += _amount;
         userFunds[msg.sender] -= _amount;
     }
 
-    function setCommissionCollector(address _newCommissionCollector) external {
-        require(commissionCollector == msg.sender);
+    function setCommissionCollector(address _newCommissionCollector) external onlyCommissionCollector{
         commissionCollector = _newCommissionCollector;
     }
 
