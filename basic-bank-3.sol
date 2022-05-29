@@ -2,7 +2,7 @@ pragma solidity 0.7.0;
 
 //transfer between users
 
-contract BasicBank  {
+contract BasicBank3  {
 
     mapping (address => uint) private userFunds;
     address private commissionCollector;
@@ -46,7 +46,7 @@ contract BasicBank  {
         commissionCollector = _newCommissionCollector;
     }
 
-    function collectCommission() external onlyCommissionCollector{
+    function collectCommission() external {
         userFunds[msg.sender] += collectedComission;
         collectedComission = 0;
     }
